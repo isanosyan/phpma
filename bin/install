@@ -56,4 +56,4 @@ function configure () {
 configure string CODEBASE_PATH "local HuffPost codebase path";
 configure string GIT_BRANCH "git branch";
 configure bool GIT_PULL_BEFORE_RUN "Pull before analysis?";
-configure string LOG_FILE "log file"
+configure string LOG_FILE "log file";
