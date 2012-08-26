@@ -1,20 +1,57 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-    path="./";
-else
-    path=$1;
+# configuring paths
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+CONFIG_PATH=$DIR"/../conf/";
+
+# validating if script can be run
+if [ ! -f $CONFIG_PATH"local" ]; then
+    echo "Local config file not found. Run bin/install first.";
+    exit;
 fi
 
-if [ -z "$2" ]; then
-    me=`basename $0`;
-    logfile="${me%.*}.log";
-else
-    logfile=$2;
+if [ `which phpcs | wc -l` == "0" ]; then
+    echo "Install PHP Code Sniffer to proceed";
+    exit;
 fi
 
-blacklist=( "gz" "js" "jar" "png" "gif" "ico" "jpg" "ttf" "css" "otf" "swf" "json" "flv" "fla" "zip" "eot" "woff" "svg" "ipa" "crx" "psd" "apk" "plist" "mobileprovision" "xml" "z" );
+if [ `phpcs -i | grep -c PHPCompatibility` == "0" ]; then
+    echo "Install PHPCompatibility coding standard";
+    exit;
+fi
 
+# loading config
+source $CONFIG_PATH"config";
+source $CONFIG_PATH"local";
+
+# checking out defined git branch and pulling latest changes
+cd $CODEBASE_PATH;
+git checkout $GIT_BRANCH;
+if [ $GIT_PULL_BEFORE_RUN == true ]; then
+    git pull;
+fi
+
+# makine sure log file exists or can be created (and creating one)
+LOG_DIR=`dirname $LOG_FILE`;
+LOG_FILE=`basename $LOG_FILE`;
+
+cd $DIR"/../";
+if [ ! -e $LOG_DIR ]; then
+    mkdir -p $LOG_DIR;
+else
+    if [ ! -d $LOG_DIR ]; then
+        echo "Log directory file exists but is not a folder";
+        exit;
+    fi
+fi
+cd $LOG_DIR;
+
+if [ -e $LOG_FILE ]; then
+    mv $LOG_FILE $LOG_FILE'-prev';
+fi
+touch $LOG_FILE;
+
+# checks if provided value is in provided array
 function in_array() {
     local x;
     ENTRY=$1
@@ -28,23 +65,21 @@ function in_array() {
     return 0
 }
 
-rm -rf $logfile;
-touch $logfile;
+# main
+echo "`date +"%d.%m.%Y %T"`	##START##" >> $LOG_FILE;
 
-echo "`date +"%d.%m.%Y %T"`	##START##" >> $logfile;
-
-for file in $( find $path -type f ); do
+for file in $( find $CODEBASE_PATH -type f ); do
     now=`date +"%d.%m.%Y %T"`
 
-    in_array ${file##*.} ${blacklist[@]};
+    in_array ${file##*.} ${BLACKLIST[@]};
     RET=$?
 
     if [ "${RET}" -eq 1 ] || [ $( echo $file | grep ".git" ) ]; then
-        echo "$now	##FILE## SKIP	$file" >> $logfile;
+        echo "$now	##FILE## SKIP	$file" >> $LOG_FILE;
     else
-        echo "$now	##FILE## SNIFF	$file" >> $logfile;
-        phpcs --standard=PHPCompatibility "$file" >> $logfile;
+        echo "$now	##FILE## SNIFF	$file" >> $LOG_FILE;
+        phpcs --standard=PHPCompatibility "$file" >> $LOG_FILE;
     fi
 done
 
-echo "`date +"%d.%m.%Y %T"`	##STOP##" >> $logfile;
+echo "`date +"%d.%m.%Y %T"`	##STOP##" >> $LOG_FILE;
