@@ -1,7 +1,6 @@
 DEFAULT_CODEBASE_PATH="./"
 DEFAULT_GIT_BRANCH="master"
 DEFAULT_GIT_PULL_BEFORE_RUN=true
+DEFAULT_LOG_FILE="log/result.log"
 
 BLACKLIST=( "gz" "js" "jar" "png" "gif" "ico" "jpg" "ttf" "css" "otf" "swf" "json" "flv" "fla" "zip" "eot" "woff" "svg" "ipa" "crx" "psd" "apk" "plist" "mobileprovision" "xml" "z" );
-
-TIMESTAMP_FORMAT="+\"%d.%m.%Y %T\""

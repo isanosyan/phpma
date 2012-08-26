@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # configuring paths
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 CONFIG_PATH=$DIR"/../conf/";
@@ -7,11 +9,12 @@ source $CONFIG_PATH"config";
 
 # init local config file
 LOCAL_CONFIG_FILE=$CONFIG_PATH"local"
-if [ -f $CONFIG_PATH"local" ]; then
+if [ -e $CONFIG_PATH"local" ]; then
     mv $LOCAL_CONFIG_FILE $LOCAL_CONFIG_FILE"-prev"
 fi
 cp $LOCAL_CONFIG_FILE"-dist" $LOCAL_CONFIG_FILE
 
+# configures provided variable based on user input and default value
 function configure () {
     TYPE=$1
     VAR=$2
@@ -49,6 +52,8 @@ function configure () {
     sed -i "" "s|__REPLACE_"$VAR"|"$VALUE"|g" $LOCAL_CONFIG_FILE
 }
 
+# main
 configure string CODEBASE_PATH "local HuffPost codebase path";
 configure string GIT_BRANCH "git branch";
 configure bool GIT_PULL_BEFORE_RUN "Pull before analysis?";
+configure string LOG_FILE "log file"
