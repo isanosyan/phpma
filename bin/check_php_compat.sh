@@ -23,7 +23,7 @@ function in_array() {
     [ -z "${ARRAY}" ] && return 0
     [ -z "${ENTRY}" ] && return 0
     for x in ${ARRAY[@]}; do
-	[ "${x}" == "${ENTRY}" ] && return 1
+        [ "${x}" == "${ENTRY}" ] && return 1
     done
     return 0
 }
@@ -40,10 +40,10 @@ for file in $( find $path -type f ); do
     RET=$?
 
     if [ "${RET}" -eq 1 ] || [ $( echo $file | grep ".git" ) ]; then
-	echo "$now	##FILE## SKIP	$file" >> $logfile;
+        echo "$now	##FILE## SKIP	$file" >> $logfile;
     else
-	echo "$now	##FILE## SNIFF	$file" >> $logfile;
-	phpcs --standard=PHPCompatibility "$file" >> $logfile;
+        echo "$now	##FILE## SNIFF	$file" >> $logfile;
+        phpcs --standard=PHPCompatibility "$file" >> $logfile;
     fi
 done
 
