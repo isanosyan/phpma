@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # configuring paths
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 CONFIG_PATH=$DIR"/../conf/";
