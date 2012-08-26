@@ -68,7 +68,7 @@ function in_array() {
 # main
 echo "`date +"%d.%m.%Y %T"`	##START##" >> $LOG_FILE;
 
-for file in $( find $CODEBASE_PATH -type f ); do
+find $CODEBASE_PATH -type f -print0 | while read -d $'\0' file; do
     now=`date +"%d.%m.%Y %T"`
 
     in_array ${file##*.} ${BLACKLIST[@]};
