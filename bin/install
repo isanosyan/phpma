@@ -49,7 +49,7 @@ function configure () {
             ;;
     esac
 
-    sed -i "" "s|__REPLACE_"$VAR"|"$VALUE"|g" $LOCAL_CONFIG_FILE
+    sed -i"" "s|__REPLACE_"$VAR"|"$VALUE"|g" $LOCAL_CONFIG_FILE
 }
 
 # main
